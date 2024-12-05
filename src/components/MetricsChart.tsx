@@ -17,10 +17,10 @@ const MetricsChart: React.FC<MetricsChartProps> = ({ data, title, color }) => {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <defs>
-              <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={`var(--tw-colors-${color})`} stopOpacity={0.3} />
-                <stop offset="95%" stopColor={`var(--tw-colors-${color})`} stopOpacity={0} />
-              </linearGradient>
+            <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#ffffff" stopOpacity={1} />
+                <stop offset="95%" stopColor="#ffffff" stopOpacity={1} />
+                </linearGradient>
             </defs>
             <XAxis
               dataKey="timestamp"

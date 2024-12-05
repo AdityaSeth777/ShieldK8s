@@ -1,6 +1,9 @@
+export type AlertSeverity = 'all' | 'critical' | 'high' | 'medium' | 'low';
+export type TimeRange = '1h' | '12h' | '24h';
+
 export interface SecurityAlert {
   id: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: Exclude<AlertSeverity, 'all'>;
   message: string;
   timestamp: string;
   source: string;

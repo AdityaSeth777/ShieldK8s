@@ -1,4 +1,6 @@
 import React from 'react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { format } from 'date-fns';
 import { MetricData } from '../types';
 
 interface MetricsChartProps {
@@ -8,29 +10,40 @@ interface MetricsChartProps {
 }
 
 const MetricsChart: React.FC<MetricsChartProps> = ({ data, title, color }) => {
-  const maxValue = Math.max(...data.map(d => d.value));
-  
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      <div className="h-40 flex items-end space-x-1">
-        {data.slice(-12).map((metric, index) => (
-          <div
-            key={index}
-            className="flex-1 flex flex-col items-center"
-          >
-            <div
-              className={`w-full ${color}`}
-              style={{
-                height: `${(metric.value / maxValue) * 100}%`,
-                transition: 'height 0.3s ease-in-out'
-              }}
+    <div className="bg-cyber-white/40 rounded-lg border border-cyber-white/20 p-6 backdrop-blur-sm">
+      <h2 className="text-xl font-semibold mb-4 text-gray-100">{title}</h2>
+      <div className="h-48">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={`var(--tw-colors-${color})`} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={`var(--tw-colors-${color})`} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="timestamp"
+              tickFormatter={(time) => format(new Date(time), 'HH:mm')}
+              stroke="#4a5568"
             />
-            <span className="text-xs text-gray-500 mt-1 transform -rotate-45">
-              {new Date(metric.timestamp).getHours()}:00
-            </span>
-          </div>
-        ))}
+            <YAxis stroke="#4a5568" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#1a1a2e',
+                border: '1px solid rgba(0, 246, 255, 0.2)',
+                borderRadius: '0.375rem',
+              }}
+              labelFormatter={(label) => format(new Date(label), 'HH:mm:ss')}
+            />
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke={`var(--tw-colors-${color})`}
+              fill={`url(#gradient-${color})`}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

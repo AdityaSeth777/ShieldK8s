@@ -15,19 +15,19 @@ const severityIcons = {
 
 const AlertPanel: React.FC<AlertPanelProps> = ({ alerts }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Security Alerts</h2>
+    <div className="bg-black bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-6">
+      <h2 className="text-xl font-semibold mb-4 text-white">Security Alerts</h2>
       <div className="space-y-4">
         {alerts.map((alert) => (
           <div
             key={alert.id}
-            className="border-l-4 border-l-red-500 bg-gray-50 p-4 rounded"
+            className="border-l-4 border-l-red-500 bg-gray-800 bg-opacity-50 p-4 rounded"
           >
             <div className="flex items-start">
               <div className="mr-3">{severityIcons[alert.severity]}</div>
               <div>
-                <p className="font-medium">{alert.message}</p>
-                <div className="text-sm text-gray-600 mt-1">
+                <p className="font-medium text-white">{alert.message}</p>
+                <div className="text-sm text-gray-300 mt-1">
                   <p>Source: {alert.source}</p>
                   <p>Destination: {alert.destination}</p>
                   <p>Time: {new Date(alert.timestamp).toLocaleString()}</p>

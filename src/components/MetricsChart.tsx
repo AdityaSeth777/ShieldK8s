@@ -11,7 +11,7 @@ interface MetricsChartProps {
 
 const MetricsChart: React.FC<MetricsChartProps> = ({ data, title, color }) => {
   return (
-    <div className="bg-cyber-white/40 rounded-lg border border-cyber-white/20 p-6 backdrop-blur-sm">
+    <div className="bg-cyber-black/40 rounded-lg border border-cyber-white/20 p-6 backdrop-blur-sm">
       <h2 className="text-xl font-semibold mb-4 text-gray-100">{title}</h2>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">

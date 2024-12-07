@@ -1,77 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './config/firebase';
-import DashboardLayout from './components/layout/DashboardLayout';
-import MetricsGrid from './components/metrics/MetricsGrid';
-import AlertsSection from './components/alerts/AlertsSection';
-import NetworkMap from './components/NetworkMap';
-import SimulatedDataBanner from './components/SimulatedDataBanner';
+import { useAtom } from 'jotai';
+import { userPreferencesAtom } from './store/preferences';
+import Navbar from './components/layout/Navbar';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import AuthContainer from './components/auth/AuthContainer';
-import UserPreferences from './components/settings/UserPreferences';
-import { useMetrics } from './hooks/useMetrics';
-import { useAlerts } from './hooks/useAlerts';
-import { useNetworkConnections } from './hooks/useNetworkConnections';
-import { TimeRange } from './types';
+import SimulatedDataBanner from './components/SimulatedDataBanner';
 
 function App() {
   const [user] = useAuthState(auth);
-  const [showSettings, setShowSettings] = useState(false);
-  
-  const cpuMetrics = useMetrics();
-  const memoryMetrics = useMetrics();
-  const networkMetrics = useMetrics();
-  const { alerts, filter, setFilter, refresh: refreshAlerts } = useAlerts();
-  const { connections, refresh: refreshConnections } = useNetworkConnections();
-
-  const handleTimeRangeChange = (range: TimeRange) => {
-    cpuMetrics.setTimeRange(range);
-    memoryMetrics.setTimeRange(range);
-    networkMetrics.setTimeRange(range);
-  };
-
-  const handleRefresh = () => {
-    cpuMetrics.refresh();
-    memoryMetrics.refresh();
-    networkMetrics.refresh();
-    refreshAlerts();
-    refreshConnections();
-  };
+  const [preferences] = useAtom(userPreferencesAtom);
 
   if (!user) {
     return <AuthContainer />;
   }
 
   return (
-    <DashboardLayout
-      timeRange={cpuMetrics.timeRange}
-      onTimeRangeChange={handleTimeRangeChange}
-      onRefresh={handleRefresh}
-      onSettingsClick={() => setShowSettings(!showSettings)}
-      user={user}
-    >
-      <SimulatedDataBanner />
-      
-      {showSettings ? (
-        <UserPreferences />
-      ) : (
-        <>
-          <MetricsGrid
-            cpuMetrics={cpuMetrics.data}
-            memoryMetrics={memoryMetrics.data}
-            networkMetrics={networkMetrics.data}
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-            <AlertsSection
-              alerts={alerts}
-              filter={filter}
-              onFilterChange={setFilter}
-            />
-            <NetworkMap connections={connections} />
-          </div>
-        </>
-      )}
-    </DashboardLayout>
+    <Router>
+      <div className={`min-h-screen ${
+        preferences.darkMode 
+          ? 'bg-cyber-black text-gray-100 bg-cyber-grid' 
+          : 'bg-gray-50 text-gray-900'
+      }`}>
+        <Navbar />
+        <div className="pt-16">
+          <SimulatedDataBanner />
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </Router>
   );
 }
 

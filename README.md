@@ -1,26 +1,70 @@
 # Security Dashboard with eBPF
 
-This project provides a real-time security dashboard for monitoring Kubernetes cluster security using eBPF and Cilium. The frontend is built with React and provides visualizations for security metrics, alerts, and network connections.
+![Security Dashboard](https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000&h=600)
 
-## Frontend Setup
+A real-time security dashboard for monitoring Kubernetes cluster security using eBPF and Cilium. The frontend provides visualizations for security metrics, alerts, and network connections with a sleek, cyberpunk-inspired design.
 
-1. Install dependencies:
+## 🚀 Quick Start
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
 npm install
 ```
-
-2. Start the development server:
+3. Set up environment variables (see Configuration section)
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-## Backend Integration
+## 🔐 Authentication Setup
 
-To fully implement this dashboard, you'll need to:
+### Firebase Configuration
 
-### 1. Set up Kubernetes with Cilium
+1. Create a Firebase project:
+   - Go to [Firebase Console](https://console.firebase.google.com/)
+   - Click "Add Project"
+   - Follow the setup wizard
 
-1. Install Kubernetes cluster (e.g., using kind or minikube)
+2. Enable Authentication:
+   - In Firebase Console, go to "Authentication" → "Sign-in method"
+   - Enable "Email/Password" authentication
+   - Add your domain to "Authorized domains"
+
+3. Get Firebase Configuration:
+   - Go to Project Settings (⚙️ icon)
+   - Under "General" tab, scroll to "Your apps"
+   - Click the web icon (</>)
+   - Register your app with a nickname
+   - Copy the firebaseConfig object
+
+4. Create `.env` file in project root:
+```env
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+
+# API Configuration (for backend integration)
+VITE_API_URL=http://your-api-url
+VITE_API_KEY=your-api-key
+```
+
+## 🔧 Backend Integration
+
+### 1. Kubernetes Setup with Cilium
+
+1. Install a Kubernetes cluster:
+```bash
+# Using kind
+kind create cluster --name security-cluster
+
+# Or using minikube
+minikube start
+```
+
 2. Install Cilium as CNI:
 ```bash
 helm repo add cilium https://helm.cilium.io/
@@ -42,6 +86,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack
 
 2. Configure Prometheus to scrape Cilium metrics:
 ```yaml
+# prometheus-servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -56,11 +101,11 @@ spec:
 
 ### 3. API Implementation
 
-Create an API server (e.g., using Node.js/Express) that:
+Create an API server that:
 
 1. Collects metrics from Prometheus
 2. Processes eBPF events from Cilium
-3. Implements the following endpoints:
+3. Implements these endpoints:
 
 - GET /api/metrics
   - Query params: timeRange (1h, 12h, 24h)
@@ -73,10 +118,11 @@ Create an API server (e.g., using Node.js/Express) that:
 - GET /api/network
   - Returns: Active network connections and their status
 
-### 4. Security Policies
+## 🛡️ Security Policies
 
 1. Create default network policies:
 ```yaml
+# default-policy.yaml
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -89,38 +135,48 @@ spec:
         io.kubernetes.pod.namespace: kube-system
 ```
 
-2. Implement policy automation using the Kubernetes API to:
-- Monitor traffic patterns
-- Generate policy recommendations
-- Apply policies automatically
+2. Implement policy automation:
+   - Monitor traffic patterns
+   - Generate policy recommendations
+   - Apply policies automatically
 
-## Environment Variables
+## 🎨 Features
 
-Create a `.env` file with:
+- Real-time security metrics visualization
+- Network connection monitoring
+- Security alerts with severity levels
+- Firebase authentication
+- Dark mode cyberpunk theme
+- Responsive design
+- Simulated data mode for development
 
-```
-VITE_API_URL=http://your-api-server:port
-VITE_REFRESH_INTERVAL=30000
-```
+## 🔄 Development Mode
 
-## Production Deployment
+Until proper backend configuration is set up, the dashboard runs in simulation mode:
 
-1. Build the frontend:
-```bash
-npm run build
-```
+1. Metrics are randomly generated
+2. Alerts are simulated
+3. Network connections are mocked
 
-2. Deploy the backend services to Kubernetes:
-```bash
-kubectl apply -f k8s/
-```
+To switch to real data:
+1. Set up the backend services
+2. Update the API URL in `.env`
+3. Remove the `SimulatedDataBanner` component from `App.tsx`
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Submit a pull request
 
-## License
+## 📝 License
 
 MIT
+
+## 🙏 Acknowledgments
+
+- [Cilium](https://cilium.io/) for eBPF-based networking
+- [Prometheus](https://prometheus.io/) for metrics collection
+- [Firebase](https://firebase.google.com/) for authentication
+- [React](https://reactjs.org/) and [Vite](https://vitejs.dev/) for the frontend framework
+- [Tailwind CSS](https://tailwindcss.com/) for styling

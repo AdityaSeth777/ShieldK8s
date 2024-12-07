@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
-import { Shield, AlertCircle } from 'lucide-react';
+import { signInWithEmailAndPassword, signInWithPopup, googleProvider, auth } from '../../config/firebase';
+import { Shield, AlertCircle, Mail } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 
 const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => {
   const [email, setEmail] = useState('');
@@ -18,6 +18,18 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err: any) {
+      setError('Google sign in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -43,6 +55,25 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
         <Shield className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
       <h2 className="text-2xl font-bold text-center mb-6 text-white">Security Dashboard</h2>
+      
+      <button
+        onClick={handleGoogleSignIn}
+        className="w-full py-3 px-4 mb-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+        disabled={loading}
+      >
+        <FcGoogle className="w-5 h-5" />
+        <span>Sign in with Google</span>
+      </button>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-600"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-black text-gray-400">Or continue with email</span>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
@@ -72,10 +103,11 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
         )}
         <button
           type="submit"
-          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50"
+          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2"
           disabled={loading}
         >
-          {loading ? 'Signing in...' : 'Login'}
+          <Mail className="w-5 h-5" />
+          <span>{loading ? 'Signing in...' : 'Sign in with Email'}</span>
         </button>
         <button
           type="button"

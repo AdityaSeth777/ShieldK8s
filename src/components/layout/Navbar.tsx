@@ -56,13 +56,21 @@ const Navbar: React.FC = () => {
               
               <Link
                 to="/profile"
-                className={`p-2 rounded-lg transition-colors ${
+                className={`flex items-center space-x-2 p-2 rounded-lg transition-colors ${
                   isActive('/profile')
                     ? 'bg-cyber-blue/20 text-cyber-blue'
                     : `${preferences.darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
                 }`}
               >
-                <User className="w-5 h-5" />
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'User'}
+                    className="w-5 h-5 rounded-full"
+                  />
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
               </Link>
               
               <Link

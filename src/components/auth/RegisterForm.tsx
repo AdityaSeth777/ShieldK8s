@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
-import { UserPlus } from 'lucide-react';
+import { createUserWithEmailAndPassword, signInWithPopup, googleProvider, auth, sendEmailVerification } from '../../config/firebase';
+import { UserPlus, AlertCircle, Mail } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 
 const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,10 +16,26 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
       setError('Passwords do not match');
       return;
     }
+    setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      setError('Failed to create account');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(userCredential.user);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create account');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err: any) {
+      setError('Google sign in failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,6 +45,25 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
         <UserPlus className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
       <h2 className="text-2xl font-bold text-center mb-6 text-white">Create Account</h2>
+
+      <button
+        onClick={handleGoogleSignIn}
+        className="w-full py-3 px-4 mb-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+        disabled={loading}
+      >
+        <FcGoogle className="w-5 h-5" />
+        <span>Sign up with Google</span>
+      </button>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-600"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-black text-gray-400">Or register with email</span>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
@@ -36,6 +72,7 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 bg-cyber-black/60 border border-cyber-blue/20 rounded text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+            disabled={loading}
           />
         </div>
         <div>
@@ -45,6 +82,7 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 bg-cyber-black/60 border border-cyber-blue/20 rounded text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+            disabled={loading}
           />
         </div>
         <div>
@@ -54,14 +92,22 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-3 bg-cyber-black/60 border border-cyber-blue/20 rounded text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+            disabled={loading}
           />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <div className="flex items-center space-x-2 text-red-500 text-sm">
+            <AlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </div>
+        )}
         <button
           type="submit"
-          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200"
+          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+          disabled={loading}
         >
-          Register
+          <Mail className="w-5 h-5" />
+          <span>{loading ? 'Creating Account...' : 'Register with Email'}</span>
         </button>
         <p className="text-center text-gray-400">
           Already have an account?{' '}
@@ -69,6 +115,7 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
             type="button"
             onClick={onToggleForm}
             className="text-cyber-blue hover:text-cyber-blue/80"
+            disabled={loading}
           >
             Login
           </button>

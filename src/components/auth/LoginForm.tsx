@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword, signInWithPopup, googleProvider, auth } from '../../config/firebase';
 import { Shield, AlertCircle, Mail } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
+import { signInWithEmail, signInWithGoogle } from '../../config/firebase/auth';
 
-const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => {
+interface LoginFormProps {
+  onToggleForm: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,7 +19,7 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
     setError('');
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmail(email, password);
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
     } finally {
@@ -27,7 +31,7 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
     setLoading(true);
     setError('');
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogle();
     } catch (err: any) {
       setError('Google sign in failed. Please try again.');
     } finally {
@@ -40,7 +44,7 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
     setError('');
     
     try {
-      await signInWithEmailAndPassword(auth, 'demo@securitydash.com', 'demo123');
+      await signInWithEmail('demo@securitydash.com', 'demo123');
     } catch (err: any) {
       console.error('Demo login error:', err);
       setError('Demo login failed. Please try again later.');
@@ -54,7 +58,6 @@ const LoginForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => 
       <div className="flex justify-center mb-6">
         <Shield className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
-      <h2 className="text-2xl font-bold text-center mb-6 text-white">Security Dashboard</h2>
       
       <button
         onClick={handleGoogleSignIn}

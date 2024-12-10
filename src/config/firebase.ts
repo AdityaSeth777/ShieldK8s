@@ -1,13 +1,16 @@
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword as firebaseSignInWithEmail, 
+  createUserWithEmailAndPassword as firebaseCreateUser,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification
+  sendEmailVerification,
+  Auth,
+  UserCredential
 } from 'firebase/auth';
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -17,14 +20,35 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth: Auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
+// Configure Google Provider
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+// Authentication helper functions
+export const signInWithGoogle = async (): Promise<UserCredential> => {
+  return signInWithPopup(auth, googleProvider);
+};
+
+export const signInWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
+  return firebaseSignInWithEmail(auth, email, password);
+};
+
+export const createUserWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
+  const userCredential = await firebaseCreateUser(auth, email, password);
+  await sendEmailVerification(userCredential.user);
+  return userCredential;
+};
+
 // Demo account setup
-export const setupDemoAccount = async () => {
+export const setupDemoAccount = async (): Promise<void> => {
   try {
-    await createUserWithEmailAndPassword(auth, 'demo@securitydash.com', 'demo123');
+    await firebaseCreateUser(auth, 'demo@securitydash.com', 'demo123');
   } catch (error: any) {
     // Ignore if user already exists
     if (error.code !== 'auth/email-already-in-use') {
@@ -34,13 +58,6 @@ export const setupDemoAccount = async () => {
 };
 
 // Initialize demo account
-setupDemoAccount();
+setupDemoAccount().catch(console.error);
 
-export { 
-  auth, 
-  googleProvider,
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  sendEmailVerification
-};
+export { auth, googleProvider };

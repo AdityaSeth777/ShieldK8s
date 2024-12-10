@@ -66,7 +66,8 @@ const Navbar: React.FC = () => {
                   <img
                     src={user.photoURL}
                     alt={user.displayName || 'User'}
-                    className="w-5 h-5 rounded-full"
+                    className="w-6 h-6 rounded-full ring-2 ring-cyber-blue/50"
+                    referrerPolicy="no-referrer"
                   />
                 ) : (
                   <User className="w-5 h-5" />

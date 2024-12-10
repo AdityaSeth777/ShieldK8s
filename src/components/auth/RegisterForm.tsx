@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithPopup, googleProvider, auth, sendEmailVerification } from '../../config/firebase';
 import { UserPlus, AlertCircle, Mail } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
+import { createUser, signInWithGoogle } from '../../config/firebase/auth';
 
-const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) => {
+interface RegisterFormProps {
+  onToggleForm: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,8 +22,7 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
     }
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(userCredential.user);
+      await createUser(email, password);
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {
@@ -31,7 +34,7 @@ const RegisterForm: React.FC<{ onToggleForm: () => void }> = ({ onToggleForm }) 
     setLoading(true);
     setError('');
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogle();
     } catch (err: any) {
       setError('Google sign in failed. Please try again.');
     } finally {

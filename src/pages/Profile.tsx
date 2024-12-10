@@ -23,6 +23,7 @@ const Profile: React.FC = () => {
             src={user.photoURL}
             alt={user.displayName || 'User'}
             className="w-16 h-16 rounded-full border-2 border-cyber-blue"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="w-16 h-16 rounded-full bg-cyber-blue/20 flex items-center justify-center">

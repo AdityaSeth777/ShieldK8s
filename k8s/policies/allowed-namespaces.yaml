@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allowed-namespaces
+spec:
+  endpointSelector:
+    matchLabels:
+      app: security-dashboard
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        io.kubernetes.pod.namespace: monitoring
+    - matchLabels:
+        io.kubernetes.pod.namespace: kube-system
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        io.kubernetes.pod.namespace: monitoring
+    - matchLabels:
+        io.kubernetes.pod.namespace: kube-system

@@ -6,13 +6,109 @@ A real-time security dashboard for monitoring Kubernetes cluster security using 
 
 ## 🚀 Quick Start
 
-1. Clone the repository
-2. Install dependencies:
+### Prerequisites
+
+1. Kubernetes cluster (local or remote)
+2. Helm 3.x
+3. kubectl
+4. Node.js 18+
+
+### Backend Setup
+
+1. Install Kind (Kubernetes in Docker):
 ```bash
-npm install
+# On Linux
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+
+# Create cluster
+kind create cluster --name security-cluster
 ```
-3. Set up environment variables (see Configuration section)
-4. Start the development server:
+
+2. Install Cilium:
+```bash
+# Add Helm repository
+helm repo add cilium https://helm.cilium.io/
+helm repo update
+
+# Install Cilium
+helm install cilium cilium/cilium --namespace kube-system \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set monitoring.enabled=true
+
+# Enable Hubble
+cilium hubble enable
+```
+
+3. Install Prometheus Stack:
+```bash
+# Add Helm repository
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# Install Prometheus
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+```
+
+4. Configure Backend:
+```bash
+# Clone repository
+git clone <repository-url>
+cd security-dashboard
+
+# Install dependencies
+cd api
+npm install
+
+# Create .env file
+cp .env.example .env
+```
+
+Edit `.env` with your configuration:
+```env
+PORT=3000
+CORS_ORIGIN=http://localhost:5173
+JWT_SECRET=your-secure-secret-key
+PROMETHEUS_URL=http://prometheus-server:9090
+HUBBLE_URL=localhost:4245
+K8S_NAMESPACE=default
+```
+
+5. Start Backend:
+```bash
+npm run dev
+```
+
+### Frontend Setup
+
+1. Configure Frontend:
+```bash
+# In project root
+cd frontend
+npm install
+
+# Create .env file
+cp .env.example .env
+```
+
+Edit `.env` with your Firebase and API configuration:
+```env
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-bucket.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+
+VITE_API_URL=http://localhost:3000
+VITE_API_KEY=your-api-key
+```
+
+2. Start Frontend:
 ```bash
 npm run dev
 ```
@@ -36,124 +132,96 @@ npm run dev
    - Under "General" tab, scroll to "Your apps"
    - Click the web icon (</>)
    - Register your app with a nickname
-   - Copy the firebaseConfig object
+   - Copy the configuration values to your `.env` file
 
-4. Create `.env` file in project root:
-```env
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
+## 🔧 Security Policies
 
-# API Configuration (for backend integration)
-VITE_API_URL=http://your-api-url
-VITE_API_KEY=your-api-key
-```
+### Default Network Policies
 
-## 🔧 Backend Integration
+Apply basic network policies:
 
-### 1. Kubernetes Setup with Cilium
-
-1. Install a Kubernetes cluster:
 ```bash
-# Using kind
-kind create cluster --name security-cluster
+# Create default deny policy
+kubectl apply -f k8s/policies/default-deny.yaml
 
-# Or using minikube
-minikube start
+# Create allowed namespaces policy
+kubectl apply -f k8s/policies/allowed-namespaces.yaml
 ```
 
-2. Install Cilium as CNI:
+### Monitoring Setup
+
+1. Access Prometheus:
 ```bash
-helm repo add cilium https://helm.cilium.io/
-helm install cilium cilium/cilium --namespace kube-system
+kubectl port-forward svc/prometheus-server 9090:9090 -n monitoring
 ```
 
-3. Enable Hubble for enhanced observability:
+2. Access Grafana:
 ```bash
-cilium hubble enable
+kubectl port-forward svc/grafana 3000:3000 -n monitoring
 ```
 
-### 2. Metrics Collection
+Default Grafana credentials:
+- Username: admin
+- Password: prom-operator
 
-1. Install Prometheus:
+### Hubble UI
+
+Access Hubble UI:
 ```bash
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm install prometheus prometheus-community/kube-prometheus-stack
+kubectl port-forward svc/hubble-ui 12000:80 -n kube-system
 ```
 
-2. Configure Prometheus to scrape Cilium metrics:
-```yaml
-# prometheus-servicemonitor.yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: cilium-metrics
-spec:
-  selector:
-    matchLabels:
-      k8s-app: cilium
-  endpoints:
-  - port: metrics
+## 📊 API Endpoints
+
+### Metrics
+
+```
+GET /api/metrics
+Query Parameters:
+- timeRange: 1h, 12h, 24h
+- type: cpu, memory, network
 ```
 
-### 3. API Implementation
+### Alerts
 
-Create an API server that:
-
-1. Collects metrics from Prometheus
-2. Processes eBPF events from Cilium
-3. Implements these endpoints:
-
-- GET /api/metrics
-  - Query params: timeRange (1h, 12h, 24h)
-  - Returns: CPU, memory, and network metrics
-
-- GET /api/alerts
-  - Query params: severity (all, critical, high, medium, low)
-  - Returns: Security alerts from Cilium/eBPF
-
-- GET /api/network
-  - Returns: Active network connections and their status
-
-## 🛡️ Security Policies
-
-1. Create default network policies:
-```yaml
-# default-policy.yaml
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: default-deny
-spec:
-  endpointSelector: {}
-  ingress:
-  - fromEndpoints:
-    - matchLabels:
-        io.kubernetes.pod.namespace: kube-system
+```
+GET /api/alerts
+Query Parameters:
+- severity: all, critical, high, medium, low
+- limit: number (default: 50)
 ```
 
-2. Implement policy automation:
-   - Monitor traffic patterns
-   - Generate policy recommendations
-   - Apply policies automatically
+### Network
 
-## 🎨 Features
+```
+GET /api/network
+Query Parameters:
+- status: all, allowed, blocked
+- limit: number (default: 100)
+```
 
-- Real-time security metrics visualization
-- Network connection monitoring
-- Security alerts with severity levels
-- Firebase authentication
-- Dark mode cyberpunk theme
-- Responsive design
-- Simulated data mode for development
+## 🛡️ Security Considerations
+
+1. API Security:
+   - JWT authentication required for all endpoints
+   - Rate limiting enabled
+   - CORS configured for frontend origin
+   - Helmet.js for security headers
+
+2. Kubernetes Security:
+   - Network policies in place
+   - Pod security policies enabled
+   - RBAC configured
+   - Secrets management via Kubernetes secrets
+
+3. Monitoring:
+   - Prometheus metrics encrypted
+   - Grafana access controlled
+   - Audit logging enabled
 
 ## 🔄 Development Mode
 
 Until proper backend configuration is set up, the dashboard runs in simulation mode:
-
 1. Metrics are randomly generated
 2. Alerts are simulated
 3. Network connections are mocked
@@ -161,7 +229,7 @@ Until proper backend configuration is set up, the dashboard runs in simulation m
 To switch to real data:
 1. Set up the backend services
 2. Update the API URL in `.env`
-3. Remove the `SimulatedDataBanner` component from `App.tsx`
+3. Remove the `SimulatedDataBanner` component
 
 ## 🤝 Contributing
 
@@ -172,11 +240,3 @@ To switch to real data:
 ## 📝 License
 
 MIT
-
-## 🙏 Acknowledgments
-
-- [Cilium](https://cilium.io/) for eBPF-based networking
-- [Prometheus](https://prometheus.io/) for metrics collection
-- [Firebase](https://firebase.google.com/) for authentication
-- [React](https://reactjs.org/) and [Vite](https://vitejs.dev/) for the frontend framework
-- [Tailwind CSS](https://tailwindcss.com/) for styling

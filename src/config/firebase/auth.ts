@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   sendEmailVerification,
   UserCredential,
@@ -12,15 +14,33 @@ import { app } from './app';
 
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+export const githubProvider = new GithubAuthProvider();
+export const microsoftProvider = new OAuthProvider('microsoft.com');
 
-// Configure Google Provider
+// Configure providers
 googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+githubProvider.setCustomParameters({
+  allow_signup: 'true'
+});
+
+microsoftProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
 // Authentication helper functions
 export const signInWithGoogle = (): Promise<UserCredential> => {
   return signInWithPopup(auth, googleProvider);
+};
+
+export const signInWithGithub = (): Promise<UserCredential> => {
+  return signInWithPopup(auth, githubProvider);
+};
+
+export const signInWithMicrosoft = (): Promise<UserCredential> => {
+  return signInWithPopup(auth, microsoftProvider);
 };
 
 export const signInWithEmail = (email: string, password: string): Promise<UserCredential> => {
@@ -36,18 +56,3 @@ export const createUser = async (email: string, password: string): Promise<UserC
 export const verifyEmail = (user: User): Promise<void> => {
   return sendEmailVerification(user);
 };
-
-// Demo account setup
-export const setupDemoAccount = async (): Promise<void> => {
-  try {
-    await createUserWithEmailAndPassword(auth, 'demo@securitydash.com', 'demo123');
-  } catch (error: any) {
-    // Ignore if user already exists
-    if (error.code !== 'auth/email-already-in-use') {
-      console.error('Error setting up demo account:', error);
-    }
-  }
-};
-
-// Initialize demo account
-setupDemoAccount().catch(console.error);

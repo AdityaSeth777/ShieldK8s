@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Shield, AlertCircle, Mail } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
-import { signInWithEmail, signInWithGoogle } from '../../config/firebase/auth';
+import { FaGithub, FaMicrosoft } from 'react-icons/fa';
+import { signInWithEmail, signInWithGoogle, signInWithGithub, signInWithMicrosoft } from '../../config/firebase/auth';
 
 interface LoginFormProps {
   onToggleForm: () => void;
@@ -39,15 +40,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
     }
   };
 
-  const handleDemoLogin = async () => {
+  const handleGithubSignIn = async () => {
     setLoading(true);
     setError('');
-    
     try {
-      await signInWithEmail('demo@securitydash.com', 'demo123');
+      await signInWithGithub();
     } catch (err: any) {
-      console.error('Demo login error:', err);
-      setError('Demo login failed. Please try again later.');
+      setError('GitHub sign in failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMicrosoftSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await signInWithMicrosoft();
+    } catch (err: any) {
+      setError('Microsoft sign in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -59,14 +70,34 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         <Shield className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
       
-      <button
-        onClick={handleGoogleSignIn}
-        className="w-full py-3 px-4 mb-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-        disabled={loading}
-      >
-        <FcGoogle className="w-5 h-5" />
-        <span>Sign in with Google</span>
-      </button>
+      <div className="space-y-4">
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full py-3 px-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+          disabled={loading}
+        >
+          <FcGoogle className="w-5 h-5" />
+          <span>Sign in with Google</span>
+        </button>
+
+        <button
+          onClick={handleGithubSignIn}
+          className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+          disabled={loading}
+        >
+          <FaGithub className="w-5 h-5" />
+          <span>Sign in with GitHub</span>
+        </button>
+
+        <button
+          onClick={handleMicrosoftSignIn}
+          className="w-full py-3 px-4 bg-[#2f2f2f] hover:bg-[#404040] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+          disabled={loading}
+        >
+          <FaMicrosoft className="w-5 h-5 text-[#00a4ef]" />
+          <span>Sign in with Microsoft</span>
+        </button>
+      </div>
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
@@ -111,14 +142,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         >
           <Mail className="w-5 h-5" />
           <span>{loading ? 'Signing in...' : 'Sign in with Email'}</span>
-        </button>
-        <button
-          type="button"
-          onClick={handleDemoLogin}
-          className="w-full py-3 bg-cyber-purple/20 hover:bg-cyber-purple/30 text-white rounded transition-colors duration-200 disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Loading Demo...' : 'Try Demo Account'}
         </button>
         <p className="text-center text-gray-400">
           Don't have an account?{' '}

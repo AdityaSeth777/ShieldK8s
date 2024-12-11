@@ -16,7 +16,12 @@ export default {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       backgroundImage: {
-        'cyber-grid': 'linear-gradient(rgba(0, 246, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 246, 255, 0.1) 1px, transparent 1px)',
+        'cyber-grid': `radial-gradient(circle at center, rgba(0, 246, 255, 0.1) 1px, transparent 1px),
+                       linear-gradient(rgba(0, 246, 255, 0.05) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(0, 246, 255, 0.05) 1px, transparent 1px)`,
+      },
+      backgroundSize: {
+        'cyber-grid': '50px 50px, 25px 25px, 25px 25px',
       },
     },
   },

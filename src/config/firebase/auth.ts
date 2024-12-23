@@ -12,20 +12,24 @@ import {
 } from 'firebase/auth';
 import { app } from './app';
 
+// Initialize auth
 export const auth = getAuth(app);
+
+// Initialize providers
 export const googleProvider = new GoogleAuthProvider();
 export const githubProvider = new GithubAuthProvider();
 export const microsoftProvider = new OAuthProvider('microsoft.com');
 
-// Configure providers
-googleProvider.setCustomParameters({
-  prompt: 'select_account'
-});
+// Configure Google Provider
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 
-githubProvider.setCustomParameters({
-  allow_signup: 'true'
-});
+// Configure GitHub Provider
+githubProvider.addScope('user:email');
+githubProvider.addScope('read:user');
 
+// Configure Microsoft Provider
+microsoftProvider.addScope('user.read');
 microsoftProvider.setCustomParameters({
   prompt: 'select_account'
 });
@@ -43,16 +47,31 @@ export const signInWithMicrosoft = (): Promise<UserCredential> => {
   return signInWithRedirect(auth, microsoftProvider);
 };
 
-export const signInWithEmail = (email: string, password: string): Promise<UserCredential> => {
-  return signInWithEmailAndPassword(auth, email, password);
+export const signInWithEmail = async (email: string, password: string): Promise<UserCredential> => {
+  try {
+    return await signInWithEmailAndPassword(auth, email, password);
+  } catch (error: any) {
+    console.error('Email sign in error:', error);
+    throw new Error(error.message || 'Failed to sign in with email');
+  }
 };
 
 export const createUser = async (email: string, password: string): Promise<UserCredential> => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  await sendEmailVerification(userCredential.user);
-  return userCredential;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await sendEmailVerification(userCredential.user);
+    return userCredential;
+  } catch (error: any) {
+    console.error('User creation error:', error);
+    throw new Error(error.message || 'Failed to create account');
+  }
 };
 
-export const verifyEmail = (user: User): Promise<void> => {
-  return sendEmailVerification(user);
+export const verifyEmail = async (user: User): Promise<void> => {
+  try {
+    await sendEmailVerification(user);
+  } catch (error: any) {
+    console.error('Email verification error:', error);
+    throw new Error(error.message || 'Failed to send verification email');
+  }
 };

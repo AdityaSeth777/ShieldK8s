@@ -1,9 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from './config/firebase';
-import { useAtom } from 'jotai';
-import { userPreferencesAtom } from './store/preferences';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './components/contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
@@ -11,30 +9,32 @@ import Settings from './pages/Settings';
 import AuthContainer from './components/auth/AuthContainer';
 
 function App() {
-  const [user] = useAuthState(auth);
-  const [preferences] = useAtom(userPreferencesAtom);
-
   return (
     <Router>
-      <div className={`min-h-screen ${
-        preferences.darkMode 
-          ? 'bg-cyber-black text-gray-100' 
-          : 'bg-gray-50 text-gray-900'
-      }`}>
+      <AuthProvider>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<AuthContainer />} />
-          {user ? (
-            <>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          )}
+
+          {/* Protected routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } />
         </Routes>
-      </div>
+      </AuthProvider>
     </Router>
   );
 }

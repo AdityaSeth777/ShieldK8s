@@ -5,7 +5,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   OAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   sendEmailVerification,
   UserCredential,
   User
@@ -34,32 +34,17 @@ microsoftProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
-// Authentication helper functions with error handling
-export const signInWithGoogle = async (): Promise<UserCredential> => {
-  try {
-    return await signInWithPopup(auth, googleProvider);
-  } catch (error: any) {
-    console.error('Google sign in error:', error);
-    throw new Error(error.message || 'Failed to sign in with Google');
-  }
+// Authentication helper functions
+export const signInWithGoogle = (): Promise<UserCredential> => {
+  return signInWithRedirect(auth, googleProvider);
 };
 
-export const signInWithGithub = async (): Promise<UserCredential> => {
-  try {
-    return await signInWithPopup(auth, githubProvider);
-  } catch (error: any) {
-    console.error('GitHub sign in error:', error);
-    throw new Error(error.message || 'Failed to sign in with GitHub');
-  }
+export const signInWithGithub = (): Promise<UserCredential> => {
+  return signInWithRedirect(auth, githubProvider);
 };
 
-export const signInWithMicrosoft = async (): Promise<UserCredential> => {
-  try {
-    return await signInWithPopup(auth, microsoftProvider);
-  } catch (error: any) {
-    console.error('Microsoft sign in error:', error);
-    throw new Error(error.message || 'Failed to sign in with Microsoft');
-  }
+export const signInWithMicrosoft = (): Promise<UserCredential> => {
+  return signInWithRedirect(auth, microsoftProvider);
 };
 
 export const signInWithEmail = async (email: string, password: string): Promise<UserCredential> => {

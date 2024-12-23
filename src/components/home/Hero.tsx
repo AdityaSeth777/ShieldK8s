@@ -52,7 +52,7 @@ const Hero: React.FC = () => {
           {/* 3D Visualization */}
           <div className="flex-1 relative">
             <img
-              src="https://i.postimg.cc/mgR6fcPF/2.jpg"
+              src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000&h=1500"
               alt="Kubernetes Security"
               className="rounded-lg shadow-2xl border border-cyber-blue/20 w-full max-w-2xl mx-auto"
             />

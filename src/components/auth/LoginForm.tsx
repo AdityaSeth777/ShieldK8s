@@ -14,6 +14,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleAuthError = (error: any) => {
+    if (error.code === 'auth/popup-blocked') {
+      setError('Please allow popups for this site to sign in with this method.');
+    } else {
+      setError(error.message || 'Authentication failed. Please try again.');
+    }
+    setLoading(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -22,45 +31,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
     try {
       await signInWithEmail(email, password);
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
-    } finally {
-      setLoading(false);
+      handleAuthError(err);
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleSocialSignIn = async (method: 'google' | 'github' | 'microsoft') => {
     setLoading(true);
     setError('');
+    
     try {
-      await signInWithGoogle();
+      switch (method) {
+        case 'google':
+          await signInWithGoogle();
+          break;
+        case 'github':
+          await signInWithGithub();
+          break;
+        case 'microsoft':
+          await signInWithMicrosoft();
+          break;
+      }
     } catch (err: any) {
-      setError('Google sign in failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGithubSignIn = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await signInWithGithub();
-    } catch (err: any) {
-      setError('GitHub sign in failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleMicrosoftSignIn = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await signInWithMicrosoft();
-    } catch (err: any) {
-      setError('Microsoft sign in failed. Please try again.');
-    } finally {
-      setLoading(false);
+      handleAuthError(err);
     }
   };
 
@@ -72,7 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
       
       <div className="space-y-4">
         <button
-          onClick={handleGoogleSignIn}
+          onClick={() => handleSocialSignIn('google')}
           className="w-full py-3 px-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
@@ -81,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         </button>
 
         <button
-          onClick={handleGithubSignIn}
+          onClick={() => handleSocialSignIn('github')}
           className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
@@ -90,7 +82,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         </button>
 
         <button
-          onClick={handleMicrosoftSignIn}
+          onClick={() => handleSocialSignIn('microsoft')}
           className="w-full py-3 px-4 bg-[#2f2f2f] hover:bg-[#404040] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
@@ -130,8 +122,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
           />
         </div>
         {error && (
-          <div className="flex items-center space-x-2 text-red-500 text-sm">
-            <AlertCircle className="w-4 h-4" />
+          <div className="flex items-center space-x-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}

@@ -1,4 +1,4 @@
-# ShieldK8s - Security Dashboard with eBPF
+# Security Dashboard with eBPF
 
 ![Security Dashboard](https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000&h=600)
 
@@ -233,26 +233,10 @@ To switch to real data:
 
 ## 🤝 Contributing
 
-### For contributing, check out [CONTRIBUTING.MD](./CONTRIBUTING.md)
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
 ## 📝 License
 
-### For license, check out [LICENSE](./LICENSE)
-
-## What next?
-
-I will be improving this project.
-
-## Where to contact ?
-
-Contact: [contact@adityaseth.in](mailto:contact@adityaseth.in?subject=Email%20owing%20to%20adityaseth.in&body=Greetings%2C%0AI%20am%20%5Bname%5D.%20I%20just%20came%20across%20your%20website%20and%20was%20hoping%20to%20talk%20to%20you%20about%20something.)
-
-## 🙋‍♂️ Support
-
-💙 If you like this project, give it a ⭐ and share it with friends! <br><br>
-
-[<img width="200" height="70" src="https://i.postimg.cc/R0cqPmDf/bmc-button.png" alt="buymeacoffee">](https://www.buymeacoffee.com/adityaseth)
-
----
-
-# Made with 🤍
+MIT

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, MailCheck, Webhook, Rss, FileCode2 } from 'lucide-react';
+import { Shield, Book, Code, Mail } from 'lucide-react';
 
 const Header: React.FC = () => {
   return (
@@ -14,40 +14,30 @@ const Header: React.FC = () => {
 
           <nav className="hidden md:flex items-center space-x-8">
             <a
-              href="https://github.com/AdityaSeth777/ShieldK8s/wiki"
+              href="https://docs.shieldk8s.dev"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
             >
-              <FileCode2 className="w-4 h-4" />
+              <Book className="w-4 h-4" />
               <span>Documentation</span>
             </a>
             
             <a
-              href="https://github.com/AdityaSeth777/ShieldK8s"
+              href="https://github.com/shieldk8s/shieldk8s"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
             >
-              <Webhook className="w-4 h-4" />
+              <Code className="w-4 h-4" />
               <span>Developers</span>
-            </a>
-
-            <a
-              href="https://adityaseth.in/ShieldK8s-blog"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
-            >
-              <Rss className="w-4 h-4" />
-              <span>Blog</span>
             </a>
             
             <a
-              href="mailto:contact@adityaseth.in"
+              href="mailto:support@shieldk8s.dev"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
             >
-              <MailCheck className="w-4 h-4" />
+              <Mail className="w-4 h-4" />
               <span>Contact</span>
             </a>
 

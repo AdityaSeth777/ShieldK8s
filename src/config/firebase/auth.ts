@@ -5,7 +5,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   OAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   sendEmailVerification,
   UserCredential,
   User
@@ -32,15 +32,15 @@ microsoftProvider.setCustomParameters({
 
 // Authentication helper functions
 export const signInWithGoogle = (): Promise<UserCredential> => {
-  return signInWithPopup(auth, googleProvider);
+  return signInWithRedirect(auth, googleProvider);
 };
 
 export const signInWithGithub = (): Promise<UserCredential> => {
-  return signInWithPopup(auth, githubProvider);
+  return signInWithRedirect(auth, githubProvider);
 };
 
 export const signInWithMicrosoft = (): Promise<UserCredential> => {
-  return signInWithPopup(auth, microsoftProvider);
+  return signInWithRedirect(auth, microsoftProvider);
 };
 
 export const signInWithEmail = (email: string, password: string): Promise<UserCredential> => {

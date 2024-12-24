@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Shield, AlertCircle, Mail } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
-import { FaGithub, FaMicrosoft } from 'react-icons/fa';
-import { signInWithEmail, signInWithGoogle, signInWithGithub, signInWithMicrosoft } from '../../config/firebase/auth';
+import { Shield, AlertCircle } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
   onToggleForm: () => void;
@@ -13,46 +12,40 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleAuthError = (error: any) => {
-    if (error.code === 'auth/popup-blocked') {
-      setError('Please allow popups for this site to sign in with this method.');
-    } else {
-      setError(error.message || 'Authentication failed. Please try again.');
-    }
-    setLoading(false);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     
     try {
-      await signInWithEmail(email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      navigate('/dashboard');
     } catch (err: any) {
-      handleAuthError(err);
+      setError(err.message || 'Failed to sign in');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSocialSignIn = async (method: 'google' | 'github' | 'microsoft') => {
-    setLoading(true);
-    setError('');
-    
+  const handleGitHubLogin = async () => {
     try {
-      switch (method) {
-        case 'google':
-          await signInWithGoogle();
-          break;
-        case 'github':
-          await signInWithGithub();
-          break;
-        case 'microsoft':
-          await signInWithMicrosoft();
-          break;
-      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) throw error;
     } catch (err: any) {
-      handleAuthError(err);
+      setError('GitHub sign in failed. Please try again.');
     }
   };
 
@@ -62,34 +55,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         <Shield className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
       
-      <div className="space-y-4">
-        <button
-          onClick={() => handleSocialSignIn('google')}
-          className="w-full py-3 px-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-          disabled={loading}
-        >
-          <FcGoogle className="w-5 h-5" />
-          <span>Sign in with Google</span>
-        </button>
-
-        <button
-          onClick={() => handleSocialSignIn('github')}
-          className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-          disabled={loading}
-        >
-          <FaGithub className="w-5 h-5" />
-          <span>Sign in with GitHub</span>
-        </button>
-
-        <button
-          onClick={() => handleSocialSignIn('microsoft')}
-          className="w-full py-3 px-4 bg-[#2f2f2f] hover:bg-[#404040] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-          disabled={loading}
-        >
-          <FaMicrosoft className="w-5 h-5 text-[#00a4ef]" />
-          <span>Sign in with Microsoft</span>
-        </button>
-      </div>
+      <button
+        onClick={handleGitHubLogin}
+        className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+        disabled={loading}
+      >
+        <img src="https://authjs.dev/img/providers/github.svg" alt="GitHub" className="w-5 h-5" />
+        <span>Sign in with GitHub</span>
+      </button>
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
@@ -100,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleEmailLogin} className="space-y-4">
         <div>
           <input
             type="email"
@@ -122,18 +95,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
           />
         </div>
         {error && (
-          <div className="flex items-center space-x-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <div className="flex items-center space-x-2 text-red-500 text-sm">
+            <AlertCircle className="w-4 h-4" />
             <span>{error}</span>
           </div>
         )}
         <button
           type="submit"
-          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
-          <Mail className="w-5 h-5" />
-          <span>{loading ? 'Signing in...' : 'Sign in with Email'}</span>
+          {loading ? 'Signing in...' : 'Sign in with Email'}
         </button>
         <p className="text-center text-gray-400">
           Don't have an account?{' '}

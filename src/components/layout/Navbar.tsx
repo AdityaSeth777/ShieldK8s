@@ -1,18 +1,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../config/firebase';
+import { useAuth } from '../../hooks/useAuth';
 import { Shield, Home, User, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { userPreferencesAtom } from '../../store/preferences';
+import { supabase } from '../../lib/supabase';
 
 const Navbar: React.FC = () => {
-  const [user] = useAuthState(auth);
+  const { user } = useAuth();
   const location = useLocation();
   const [preferences, setPreferences] = useAtom(userPreferencesAtom);
 
-  const handleLogout = () => {
-    auth.signOut();
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
   };
 
   const toggleTheme = () => {
@@ -56,22 +56,13 @@ const Navbar: React.FC = () => {
               
               <Link
                 to="/profile"
-                className={`flex items-center space-x-2 p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-colors ${
                   isActive('/profile')
                     ? 'bg-cyber-blue/20 text-cyber-blue'
                     : `${preferences.darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
                 }`}
               >
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt={user.displayName || 'User'}
-                    className="w-6 h-6 rounded-full ring-2 ring-cyber-blue/50"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <User className="w-5 h-5" />
-                )}
+                <User className="w-5 h-5" />
               </Link>
               
               <Link

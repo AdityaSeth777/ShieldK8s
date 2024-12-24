@@ -9,10 +9,4 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-
-// Verify Firebase configuration
-if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
-  console.error('Firebase configuration is incomplete. Please check your environment variables.');
-}

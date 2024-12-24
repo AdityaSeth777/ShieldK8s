@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './components/contexts/AuthContext';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+import { useAtom } from 'jotai';
+import { userPreferencesAtom } from './store/preferences';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
@@ -9,32 +10,30 @@ import Settings from './pages/Settings';
 import AuthContainer from './components/auth/AuthContainer';
 
 function App() {
+  const { user } = useAuth();
+  const [preferences] = useAtom(userPreferencesAtom);
+
   return (
     <Router>
-      <AuthProvider>
+      <div className={`min-h-screen ${
+        preferences.darkMode 
+          ? 'bg-cyber-black text-gray-100' 
+          : 'bg-gray-50 text-gray-900'
+      }`}>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<AuthContainer />} />
-
-          {/* Protected routes */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          } />
+          {user ? (
+            <>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+            </>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
         </Routes>
-      </AuthProvider>
+      </div>
     </Router>
   );
 }

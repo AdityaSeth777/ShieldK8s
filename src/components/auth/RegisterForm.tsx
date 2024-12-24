@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { UserPlus, AlertCircle, Mail } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
-import { createUser, signInWithGoogle } from '../../config/firebase/auth';
+import { UserPlus, AlertCircle } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterFormProps {
   onToggleForm: () => void;
@@ -13,6 +13,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
     }
     setLoading(true);
     try {
-      await createUser(email, password);
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {
@@ -30,15 +37,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError('');
+  const handleGitHubSignUp = async () => {
     try {
-      await signInWithGoogle();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) throw error;
     } catch (err: any) {
-      setError('Google sign in failed. Please try again.');
-    } finally {
-      setLoading(false);
+      setError('GitHub sign up failed. Please try again.');
     }
   };
 
@@ -50,12 +60,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
       <h2 className="text-2xl font-bold text-center mb-6 text-white">Create Account</h2>
 
       <button
-        onClick={handleGoogleSignIn}
-        className="w-full py-3 px-4 mb-4 bg-white hover:bg-gray-50 text-gray-900 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+        onClick={handleGitHubSignUp}
+        className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200"
         disabled={loading}
       >
-        <FcGoogle className="w-5 h-5" />
-        <span>Sign up with Google</span>
+        <img src="https://authjs.dev/img/providers/github.svg" alt="GitHub" className="w-5 h-5" />
+        <span>Sign up with GitHub</span>
       </button>
 
       <div className="relative my-6">
@@ -106,11 +116,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleForm }) => {
         )}
         <button
           type="submit"
-          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
-          <Mail className="w-5 h-5" />
-          <span>{loading ? 'Creating Account...' : 'Register with Email'}</span>
+          {loading ? 'Creating Account...' : 'Register with Email'}
         </button>
         <p className="text-center text-gray-400">
           Already have an account?{' '}

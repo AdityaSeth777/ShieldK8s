@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword as firebaseSignInWithEmail, 
   createUserWithEmailAndPassword as firebaseCreateUser,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
   sendEmailVerification,
   Auth,
   UserCredential
@@ -32,7 +32,7 @@ googleProvider.setCustomParameters({
 
 // Authentication helper functions
 export const signInWithGoogle = async (): Promise<UserCredential> => {
-  return signInWithRedirect(auth, googleProvider);
+  return signInWithPopup(auth, googleProvider);
 };
 
 export const signInWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {

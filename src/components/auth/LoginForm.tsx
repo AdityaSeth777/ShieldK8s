@@ -39,7 +39,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
+          redirectTo: `${window.location.origin}/dashboard`,
+          skipBrowserRedirect: false // Ensure browser redirects after auth
         }
       });
       

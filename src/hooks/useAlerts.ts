@@ -10,11 +10,6 @@ export const useAlerts = () => {
   const fetchAlerts = async () => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/alerts?severity=${filter}`);
-      // const data = await response.json();
-      // setAlerts(data);
-      
       // Simulated data for demo
       const severities: SecurityAlert['severity'][] = ['critical', 'high', 'medium', 'low'];
       const newAlerts = Array.from({ length: 5 }, (_, i) => ({
@@ -35,7 +30,8 @@ export const useAlerts = () => {
 
   useEffect(() => {
     fetchAlerts();
-    const interval = setInterval(fetchAlerts, 10000); // Refresh every 10 seconds
+    // Update every second
+    const interval = setInterval(fetchAlerts, 1000);
     return () => clearInterval(interval);
   }, [filter]);
 

@@ -9,12 +9,6 @@ export const useNetworkConnections = () => {
   const fetchConnections = async () => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/network');
-      // const data = await response.json();
-      // setConnections(data);
-      
-      // Simulated data for demo
       const protocols = ['TCP', 'UDP'];
       const newConnections = Array.from({ length: 5 }, (_, i) => ({
         id: `${Date.now()}-${i}`,
@@ -34,7 +28,8 @@ export const useNetworkConnections = () => {
 
   useEffect(() => {
     fetchConnections();
-    const interval = setInterval(fetchConnections, 15000); // Refresh every 15 seconds
+    // Update every second
+    const interval = setInterval(fetchConnections, 1000);
     return () => clearInterval(interval);
   }, []);
 

@@ -23,7 +23,8 @@ export const useMetrics = (initialData: MetricData[] = []) => {
 
   useEffect(() => {
     refresh();
-    const interval = setInterval(refresh, 30000);
+    // Update every second
+    const interval = setInterval(refresh, 1000);
     return () => clearInterval(interval);
   }, [timeRange]);
 

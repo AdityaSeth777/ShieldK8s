@@ -14,22 +14,28 @@ const MetricsGrid: React.FC<MetricsGridProps> = ({
   networkMetrics,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <MetricsChart
-        data={cpuMetrics}
-        title="CPU Usage"
-        color="cyber-blue"
-      />
-      <MetricsChart
-        data={memoryMetrics}
-        title="Memory Usage"
-        color="cyber-green"
-      />
-      <MetricsChart
-        data={networkMetrics}
-        title="Network Traffic"
-        color="cyber-purple"
-      />
+    <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+      <div className="col-span-1 lg:col-span-3 xl:col-span-1">
+        <MetricsChart
+          data={cpuMetrics}
+          title="CPU Usage"
+          color="cyber-blue"
+        />
+      </div>
+      <div className="col-span-1 lg:col-span-3 xl:col-span-1">
+        <MetricsChart
+          data={memoryMetrics}
+          title="Memory Usage"
+          color="cyber-green"
+        />
+      </div>
+      <div className="col-span-1 lg:col-span-3 xl:col-span-1">
+        <MetricsChart
+          data={networkMetrics}
+          title="Network Traffic"
+          color="cyber-purple"
+        />
+      </div>
     </div>
   );
 };

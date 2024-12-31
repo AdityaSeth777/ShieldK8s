@@ -34,48 +34,39 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
     }
   };
 
-  const handleSocialLogin = async (provider: 'github' | 'google') => {
+  const handleGoogleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/dashboard`,
-          queryParams: provider === 'google' ? {
+          queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-          } : undefined
+          }
         }
       });
       
       if (error) throw error;
     } catch (err: any) {
-      setError(`${provider} sign in failed. Please try again.`);
+      setError('Google sign in failed. Please try again.');
     }
   };
 
   return (
-    <div className="bg-black bg-opacity-80 p-8 rounded-lg shadow-xl w-96 backdrop-blur-lg border border-cyber-blue/20">
+    <div className="bg-black bg-opacity-80 p-8 rounded-lg shadow-xl w-full max-w-md backdrop-blur-lg border border-cyber-blue/20">
       <div className="flex justify-center mb-6">
         <Shield className="w-12 h-12 text-cyber-blue animate-pulse-slow" />
       </div>
       
       <div className="space-y-4">
         <button
-          onClick={() => handleSocialLogin('google')}
+          onClick={handleGoogleLogin}
           className="w-full py-3 px-4 bg-white hover:bg-gray-100 text-gray-800 rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
           disabled={loading}
         >
           <img src="https://authjs.dev/img/providers/google.svg" alt="Google" className="w-5 h-5" />
           <span>Sign in with Google</span>
-        </button>
-
-        <button
-          onClick={() => handleSocialLogin('github')}
-          className="w-full py-3 px-4 bg-[#24292e] hover:bg-[#2f363d] text-white rounded flex items-center justify-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-          disabled={loading}
-        >
-          <img src="https://authjs.dev/img/providers/github.svg" alt="GitHub" className="w-5 h-5" />
-          <span>Sign in with GitHub</span>
         </button>
       </div>
 

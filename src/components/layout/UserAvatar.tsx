@@ -32,3 +32,5 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, size = 'md' }) => {
     </div>
   );
 };
+
+export default UserAvatar;

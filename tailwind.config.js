@@ -16,6 +16,7 @@ export default {
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'slide-in': 'slide-in 0.3s ease-out',
+        'spin-slow': 'spin 3s linear infinite',
       },
       backgroundImage: {
         'cyber-grid': `radial-gradient(circle at center, rgba(0, 246, 255, 0.1) 1px, transparent 1px),
@@ -29,6 +30,9 @@ export default {
         'cyber-grid': '50px 50px, 25px 25px, 25px 25px',
         'cyber-dots': '20px 20px',
         'cyber-lines': '40px 40px'
+      },
+      cursor: {
+        none: 'none',
       },
     },
   },

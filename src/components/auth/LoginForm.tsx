@@ -89,8 +89,53 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
       </div>
 
       <form onSubmit={handleEmailLogin} className="space-y-4">
-        {/* ... rest of the form remains the same ... */}
+        <div>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 bg-cyber-black/60 border border-cyber-blue/20 rounded text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+            disabled={loading}
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 bg-cyber-black/60 border border-cyber-blue/20 rounded text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+            disabled={loading}
+          />
+        </div>
+        {error && (
+          <div className="flex items-center space-x-2 text-red-500 text-sm">
+            <AlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </div>
+        )}
+        <button
+          type="submit"
+          className="w-full py-3 bg-cyber-blue/20 hover:bg-cyber-blue/30 text-white rounded transition-colors duration-200 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? 'Signing in...' : 'Sign in with Email'}
+        </button>
+        <p className="text-center text-gray-400">
+          Don't have an account?{' '}
+          <button
+            type="button"
+            onClick={onToggleForm}
+            className="text-cyber-blue hover:text-cyber-blue/80"
+            disabled={loading}
+          >
+            Register
+          </button>
+        </p>
       </form>
     </div>
   );
 };
+
+export default LoginForm;

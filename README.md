@@ -54,97 +54,59 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
   --create-namespace
 ```
 
-4. Configure Backend:
+### Frontend Setup
+
+1. Clone and install dependencies:
 ```bash
-# Clone repository
-git clone <repository-url>
-cd security-dashboard
-
-# Install dependencies
-cd api
+git clone https://github.com/AdityaSeth777/Shieldk8s
+cd Shieldk8s
 npm install
+```
 
-# Create .env file
+2. Configure environment variables:
+```bash
 cp .env.example .env
 ```
 
 Edit `.env` with your configuration:
 ```env
-PORT=3000
-CORS_ORIGIN=http://localhost:5173
-JWT_SECRET=your-secure-secret-key
-PROMETHEUS_URL=http://prometheus-server:9090
-HUBBLE_URL=localhost:4245
-K8S_NAMESPACE=default
+VITE_SUPABASE_URL=your-project-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-5. Start Backend:
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-### Frontend Setup
+## 📊 Monitoring Features
 
-1. Configure Frontend:
-```bash
-# In project root
-cd frontend
-npm install
+### 1. Security Metrics
+- CPU and Memory usage
+- Network traffic analysis
+- Pod security status
+- Policy compliance
 
-# Create .env file
-cp .env.example .env
-```
+### 2. Network Monitoring
+- Real-time connection tracking
+- Traffic visualization
+- Policy violations
+- Protocol analysis
 
-Edit `.env` with your Firebase and API configuration:
-```env
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-bucket.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
+### 3. Alert System
+- Real-time security alerts
+- Severity classification
+- Custom alert rules
+- Notification system
 
-VITE_API_URL=http://localhost:3000
-VITE_API_KEY=your-api-key
-```
+## 🔧 Configuration
 
-2. Start Frontend:
-```bash
-npm run dev
-```
-
-## 🔐 Authentication Setup
-
-### Firebase Configuration
-
-1. Create a Firebase project:
-   - Go to [Firebase Console](https://console.firebase.google.com/)
-   - Click "Add Project"
-   - Follow the setup wizard
-
-2. Enable Authentication:
-   - In Firebase Console, go to "Authentication" → "Sign-in method"
-   - Enable "Email/Password" authentication
-   - Add your domain to "Authorized domains"
-
-3. Get Firebase Configuration:
-   - Go to Project Settings (⚙️ icon)
-   - Under "General" tab, scroll to "Your apps"
-   - Click the web icon (</>)
-   - Register your app with a nickname
-   - Copy the configuration values to your `.env` file
-
-## 🔧 Security Policies
-
-### Default Network Policies
+### Network Policies
 
 Apply basic network policies:
 
 ```bash
-# Create default deny policy
 kubectl apply -f k8s/policies/default-deny.yaml
-
-# Create allowed namespaces policy
 kubectl apply -f k8s/policies/allowed-namespaces.yaml
 ```
 
@@ -171,65 +133,60 @@ Access Hubble UI:
 kubectl port-forward svc/hubble-ui 12000:80 -n kube-system
 ```
 
-## 📊 API Endpoints
+## 🛡️ Security Features
 
-### Metrics
+1. Network Security:
+   - Layer 7 policy enforcement
+   - Network encryption
+   - Service mesh integration
+   - Traffic monitoring
+
+2. Threat Detection:
+   - Anomaly detection
+   - Behavioral analysis
+   - Policy violation alerts
+   - Real-time monitoring
+
+3. Access Control:
+   - RBAC integration
+   - Policy enforcement
+   - Audit logging
+   - Authentication tracking
+
+## 📝 Development
+
+### Project Structure
 
 ```
-GET /api/metrics
-Query Parameters:
-- timeRange: 1h, 12h, 24h
-- type: cpu, memory, network
+├── src/
+│   ├── components/     # React components
+│   ├── hooks/         # Custom React hooks
+│   ├── pages/         # Page components
+│   ├── store/         # State management
+│   ├── types/         # TypeScript types
+│   └── utils/         # Utility functions
+├── k8s/              # Kubernetes manifests
+│   └── policies/     # Network policies
+└── api/             # Backend API
 ```
 
-### Alerts
+### Adding New Features
 
-```
-GET /api/alerts
-Query Parameters:
-- severity: all, critical, high, medium, low
-- limit: number (default: 50)
-```
+1. Create new components in `src/components/`
+2. Add routes in `src/App.tsx`
+3. Update types in `src/types/`
+4. Add network policies in `k8s/policies/`
 
-### Network
+## 📚 Documentation
 
-```
-GET /api/network
-Query Parameters:
-- status: all, allowed, blocked
-- limit: number (default: 100)
-```
+Comprehensive documentation is available at `/docs` in the application, covering:
 
-## 🛡️ Security Considerations
-
-1. API Security:
-   - JWT authentication required for all endpoints
-   - Rate limiting enabled
-   - CORS configured for frontend origin
-   - Helmet.js for security headers
-
-2. Kubernetes Security:
-   - Network policies in place
-   - Pod security policies enabled
-   - RBAC configured
-   - Secrets management via Kubernetes secrets
-
-3. Monitoring:
-   - Prometheus metrics encrypted
-   - Grafana access controlled
-   - Audit logging enabled
-
-## 🔄 Development Mode
-
-Until proper backend configuration is set up, the dashboard runs in simulation mode:
-1. Metrics are randomly generated
-2. Alerts are simulated
-3. Network connections are mocked
-
-To switch to real data:
-1. Set up the backend services
-2. Update the API URL in `.env`
-3. Remove the `SimulatedDataBanner` component
+- Kubernetes setup
+- Cilium & eBPF configuration
+- Monitoring setup
+- CLI tools
+- Security policies
+- Troubleshooting
 
 ## 🤝 Contributing
 
@@ -237,6 +194,6 @@ To switch to real data:
 2. Create a feature branch
 3. Submit a pull request
 
-## 📝 License
+## 📄 License
 
 MIT

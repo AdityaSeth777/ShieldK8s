@@ -19,13 +19,13 @@ const Footer: React.FC = () => {
               Secure your Kubernetes infrastructure with advanced eBPF-powered monitoring.
             </p>
             <div className="flex space-x-4">
-              <a href="https://github.com/shieldk8s" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
+              <a href="https://github.com/AdityaSeth777" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="https://twitter.com/shieldk8s" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
+              <a href="https://twitter.com/AdityaSeth777" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com/company/shieldk8s" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
+              <a href="https://adityaseth.in/linkedin" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyber-blue transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <a 
-                  href="https://docs.shieldk8s.dev"
+                  href="./docs"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-cyber-blue transition-colors"
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="https://github.com/shieldk8s/shieldk8s"
+                  href="https://github.com/AdityaSeth777/shieldk8s"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-cyber-blue transition-colors"
@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="mailto:support@shieldk8s.dev"
+                  href="mailto:contact@adityaseth.in"
                   className="text-gray-400 hover:text-cyber-blue transition-colors"
                 >
                   Contact
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <a 
-                  href="https://blog.shieldk8s.dev"
+                  href="https://adityaseth777.hashnode.dev/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-cyber-blue transition-colors"

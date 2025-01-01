@@ -14,7 +14,7 @@ const Header: React.FC = () => {
 
           <nav className="hidden md:flex items-center space-x-8">
             <a
-              href="https://docs.shieldk8s.dev"
+              href="./docs"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
@@ -24,7 +24,7 @@ const Header: React.FC = () => {
             </a>
             
             <a
-              href="https://github.com/shieldk8s/shieldk8s"
+              href="https://github.com/AdityaSeth777/shieldk8s"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
             </a>
             
             <a
-              href="mailto:support@shieldk8s.dev"
+              href="mailto:contact@adityaseth.in"
               className="text-gray-300 hover:text-cyber-blue flex items-center space-x-2 transition-colors"
             >
               <Mail className="w-4 h-4" />

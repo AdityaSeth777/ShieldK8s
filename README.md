@@ -58,8 +58,8 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 1. Clone and install dependencies:
 ```bash
-git clone https://github.com/AdityaSeth777/Shieldk8s
-cd Shieldk8s
+git clone <repository-url>
+cd security-dashboard
 npm install
 ```
 

@@ -1,21 +1,19 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { getEnvNumber, getEnvString } from './utils/env';
 
 export const config = {
-  port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  port: getEnvNumber('PORT', 3000),
+  corsOrigin: getEnvString('CORS_ORIGIN', 'http://localhost:5173'),
   jwt: {
-    secret: process.env.JWT_SECRET || 'your-secret-key',
+    secret: getEnvString('JWT_SECRET', 'your-secret-key'),
     expiresIn: '1d'
   },
   prometheus: {
-    url: process.env.PROMETHEUS_URL || 'http://localhost:9090'
+    url: getEnvString('PROMETHEUS_URL', 'http://localhost:9090')
   },
   cilium: {
-    hubbleUrl: process.env.HUBBLE_URL || 'localhost:4245'
+    hubbleUrl: getEnvString('HUBBLE_URL', 'localhost:4245')
   },
   kubernetes: {
-    namespace: process.env.K8S_NAMESPACE || 'default'
+    namespace: getEnvString('K8S_NAMESPACE', 'default')
   }
 };

@@ -48,20 +48,19 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   res.status(500).json({ error: 'Internal server error' });
 });
 
-const PORT = config.port || 3000;
-
-async function startServer() {
+const startServer = async () => {
   try {
     await setupPrometheus();
     await setupCilium();
     
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+    const port = config.port;
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
   }
-}
+};
 
 startServer();

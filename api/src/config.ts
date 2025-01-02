@@ -1,19 +1,28 @@
-import { getEnvNumber, getEnvString } from './utils/env';
+// Default values for configuration
+const defaults = {
+  port: 3000,
+  corsOrigin: 'http://localhost:5173',
+  jwtSecret: 'your-secret-key',
+  prometheusUrl: 'http://localhost:9090',
+  hubbleUrl: 'localhost:4245',
+  k8sNamespace: 'default'
+};
 
+// Environment configuration
 export const config = {
-  port: getEnvNumber('PORT', 3000),
-  corsOrigin: getEnvString('CORS_ORIGIN', 'http://localhost:5173'),
+  port: Number(process.env.PORT) || defaults.port,
+  corsOrigin: process.env.CORS_ORIGIN || defaults.corsOrigin,
   jwt: {
-    secret: getEnvString('JWT_SECRET', 'your-secret-key'),
+    secret: process.env.JWT_SECRET || defaults.jwtSecret,
     expiresIn: '1d'
   },
   prometheus: {
-    url: getEnvString('PROMETHEUS_URL', 'http://localhost:9090')
+    url: process.env.PROMETHEUS_URL || defaults.prometheusUrl
   },
   cilium: {
-    hubbleUrl: getEnvString('HUBBLE_URL', 'localhost:4245')
+    hubbleUrl: process.env.HUBBLE_URL || defaults.hubbleUrl
   },
   kubernetes: {
-    namespace: getEnvString('K8S_NAMESPACE', 'default')
+    namespace: process.env.K8S_NAMESPACE || defaults.k8sNamespace
   }
 };

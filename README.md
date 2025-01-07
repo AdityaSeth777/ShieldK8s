@@ -201,6 +201,10 @@ Comprehensive documentation is available at `/docs` in the application, covering
 - Security policies
 - Troubleshooting
 
+## Blogs
+
+[![https://adityaseth777.hashnode.dev/nlp-sheldon](./images/logo-resized.png)](https://adityaseth777.hashnode.dev/nlp-sheldon)
+
 ## 🤝 Contributing
 
 1. Fork the repository

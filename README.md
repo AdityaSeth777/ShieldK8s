@@ -203,7 +203,7 @@ Comprehensive documentation is available at `/docs` in the application, covering
 
 ## Blogs
 
-[![https://adityaseth777.hashnode.dev/nlp-sheldon](./images/logo-resized.png)](https://adityaseth777.hashnode.dev/nlp-sheldon)
+[![https://adityaseth777.hashnode.dev/nlp-sheldon](./images/logo-resized.png)](https://adityaseth777.hashnode.dev/shieldK8s)
 
 ## 🤝 Contributing
 

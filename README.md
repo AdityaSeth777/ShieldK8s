@@ -2,7 +2,34 @@
 
 ![Security Dashboard](https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000&h=600)
 
-A real-time security dashboard for monitoring Kubernetes cluster security using eBPF and Cilium. The frontend provides visualizations for security metrics, alerts, and network connections with a sleek, cyberpunk-inspired design.
+A privacy-focused, local-only security dashboard for monitoring Kubernetes cluster security using eBPF and Cilium. All metrics and data stay within your infrastructure.
+
+## 🔒 Privacy Features
+
+- **Local-Only Monitoring**: All metrics and data remain within your infrastructure
+- **No External Dependencies**: Monitoring stack runs entirely on your cluster
+- **Zero Data Export**: No metrics or logs leave your environment
+- **Self-Contained**: Similar architecture to Kafka + Grafana setups
+
+## 🛡️ Security Features
+
+1. Network Security:
+   - Layer 7 policy enforcement
+   - Network encryption
+   - Service mesh integration
+   - Traffic monitoring
+
+2. Threat Detection:
+   - Anomaly detection
+   - Behavioral analysis
+   - Policy violation alerts
+   - Real-time monitoring
+
+3. Access Control:
+   - RBAC integration
+   - Policy enforcement
+   - Audit logging
+   - Authentication tracking
 
 ## 🚀 Quick Start
 
@@ -133,25 +160,6 @@ Access Hubble UI:
 kubectl port-forward svc/hubble-ui 12000:80 -n kube-system
 ```
 
-## 🛡️ Security Features
-
-1. Network Security:
-   - Layer 7 policy enforcement
-   - Network encryption
-   - Service mesh integration
-   - Traffic monitoring
-
-2. Threat Detection:
-   - Anomaly detection
-   - Behavioral analysis
-   - Policy violation alerts
-   - Real-time monitoring
-
-3. Access Control:
-   - RBAC integration
-   - Policy enforcement
-   - Audit logging
-   - Authentication tracking
 
 ## 📝 Development
 

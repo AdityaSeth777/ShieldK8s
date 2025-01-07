@@ -1,6 +1,6 @@
 # Security Dashboard with eBPF
 
-![Security Dashboard](./shieldk8s.jpg)
+![Security Dashboard](./images/shieldk8s.jpg)
 
 A privacy-focused, local-only security dashboard for monitoring Kubernetes cluster security using eBPF and Cilium. All metrics and data stay within your infrastructure.
 
@@ -30,6 +30,11 @@ A privacy-focused, local-only security dashboard for monitoring Kubernetes clust
    - Policy enforcement
    - Audit logging
    - Authentication tracking
+
+## Screenshots
+
+![](./images/hp.png)
+![](./images/db.png)
 
 ## 🚀 Quick Start
 

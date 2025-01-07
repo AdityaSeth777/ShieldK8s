@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="https://learn.shieldk8s.dev"
+                  href="https://adityaseth777.hashnode.dev/shieldk8s"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-cyber-blue transition-colors"
